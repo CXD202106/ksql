@@ -22,6 +22,7 @@ import io.confluent.ksql.parser.tree.ListTypes;
 import io.confluent.ksql.rest.SessionProperties;
 import io.confluent.ksql.rest.entity.SchemaInfo;
 import io.confluent.ksql.rest.entity.TypeList;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.rest.util.EntityUtil;
 import io.confluent.ksql.services.ServiceContext;
 import io.confluent.ksql.statement.ConfiguredStatement;
@@ -38,7 +39,8 @@ public final class ListTypesExecutor {
       final ConfiguredStatement<ListTypes> configuredStatement,
       final SessionProperties sessionProperties,
       final KsqlExecutionContext executionContext,
-      final ServiceContext serviceContext
+      final ServiceContext serviceContext,
+      final KsqlRestConfig restConfig
   ) {
     final ImmutableMap.Builder<String, SchemaInfo> types = ImmutableMap.builder();
 

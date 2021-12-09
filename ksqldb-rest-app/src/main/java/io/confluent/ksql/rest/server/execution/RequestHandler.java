@@ -23,6 +23,7 @@ import io.confluent.ksql.parser.tree.Statement;
 import io.confluent.ksql.rest.SessionProperties;
 import io.confluent.ksql.rest.entity.KsqlEntity;
 import io.confluent.ksql.rest.entity.KsqlEntityList;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.rest.server.computation.DistributingExecutor;
 import io.confluent.ksql.rest.util.FeatureFlagChecker;
 import io.confluent.ksql.security.KsqlSecurityContext;
@@ -79,7 +80,8 @@ public class RequestHandler {
   public KsqlEntityList execute(
       final KsqlSecurityContext securityContext,
       final List<ParsedStatement> statements,
-      final SessionProperties sessionProperties
+      final SessionProperties sessionProperties,
+      final KsqlRestConfig restConfig
   ) {
     final KsqlEntityList entities = new KsqlEntityList();
     for (final ParsedStatement parsed : statements) {
@@ -94,7 +96,8 @@ public class RequestHandler {
           securityContext,
           prepared,
           sessionProperties,
-          entities
+          entities,
+          restConfig
       ).ifPresent(entities::add);
     }
     return entities;
@@ -105,7 +108,8 @@ public class RequestHandler {
       final KsqlSecurityContext securityContext,
       final PreparedStatement<T> prepared,
       final SessionProperties sessionProperties,
-      final KsqlEntityList entities
+      final KsqlEntityList entities,
+      final KsqlRestConfig restConfig
   ) {
     final Class<? extends Statement> statementClass = prepared.getStatement().getClass();
     
@@ -120,7 +124,7 @@ public class RequestHandler {
 
     final StatementExecutor<T> executor = (StatementExecutor<T>) customExecutors.getOrDefault(
         statementClass,
-        (stmt, props, ctx, svcCtx) -> distributor.execute(stmt, ctx, securityContext)
+        (stmt, props, ctx, svcCtx, cfg) -> distributor.execute(stmt, ctx, securityContext, cfg)
     );
 
 
@@ -128,12 +132,13 @@ public class RequestHandler {
         configured,
         sessionProperties,
         ksqlEngine,
-        securityContext.getServiceContext());
+        securityContext.getServiceContext(),
+        restConfig);
 
     if (response.isHandled()) {
       return response.getEntity();
     } else {
-      return distributor.execute(configured, ksqlEngine, securityContext).getEntity();
+      return distributor.execute(configured, ksqlEngine, securityContext, restConfig).getEntity();
     }
   }
 }

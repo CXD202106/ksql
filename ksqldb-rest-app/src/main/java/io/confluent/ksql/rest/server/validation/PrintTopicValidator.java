@@ -18,6 +18,7 @@ package io.confluent.ksql.rest.server.validation;
 import io.confluent.ksql.KsqlExecutionContext;
 import io.confluent.ksql.rest.Errors;
 import io.confluent.ksql.rest.SessionProperties;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.rest.server.resources.KsqlRestException;
 import io.confluent.ksql.services.ServiceContext;
 import io.confluent.ksql.statement.ConfiguredStatement;
@@ -32,7 +33,8 @@ public final class PrintTopicValidator {
       final ConfiguredStatement<?> statement,
       final SessionProperties sessionProperties,
       final KsqlExecutionContext context,
-      final ServiceContext serviceContext
+      final ServiceContext serviceContext,
+      final KsqlRestConfig restConfig
   ) {
     throw new KsqlRestException(Errors.queryEndpoint(statement.getStatementText()));
   }

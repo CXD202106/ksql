@@ -23,6 +23,7 @@ import io.confluent.ksql.rest.entity.ConnectorList;
 import io.confluent.ksql.rest.entity.ErrorEntity;
 import io.confluent.ksql.rest.entity.KsqlWarning;
 import io.confluent.ksql.rest.entity.SimpleConnectorInfo;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.services.ConnectClient;
 import io.confluent.ksql.services.ConnectClient.ConnectResponse;
 import io.confluent.ksql.services.ServiceContext;
@@ -48,7 +49,8 @@ public final class ListConnectorsExecutor {
       final ConfiguredStatement<ListConnectors> configuredStatement,
       final SessionProperties sessionProperties,
       final KsqlExecutionContext ksqlExecutionContext,
-      final ServiceContext serviceContext
+      final ServiceContext serviceContext,
+      final KsqlRestConfig restConfig
   ) {
     final ConnectClient connectClient = serviceContext.getConnectClient();
     final ConnectResponse<List<String>> connectors = serviceContext.getConnectClient().connectors();

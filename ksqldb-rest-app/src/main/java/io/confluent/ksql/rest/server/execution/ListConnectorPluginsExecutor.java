@@ -21,6 +21,7 @@ import io.confluent.ksql.rest.SessionProperties;
 import io.confluent.ksql.rest.entity.ConnectorPluginsList;
 import io.confluent.ksql.rest.entity.ErrorEntity;
 import io.confluent.ksql.rest.entity.SimpleConnectorPluginInfo;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.services.ConnectClient.ConnectResponse;
 import io.confluent.ksql.services.ServiceContext;
 import io.confluent.ksql.statement.ConfiguredStatement;
@@ -39,7 +40,8 @@ public final class ListConnectorPluginsExecutor {
       final ConfiguredStatement<ListConnectorPlugins> configuredStatement,
       final SessionProperties sessionProperties,
       final KsqlExecutionContext ksqlExecutionContext,
-      final ServiceContext serviceContext
+      final ServiceContext serviceContext,
+      final KsqlRestConfig restConfig
   ) {
     final ConnectResponse<List<ConnectorPluginInfo>> plugins =
         serviceContext.getConnectClient().connectorPlugins();

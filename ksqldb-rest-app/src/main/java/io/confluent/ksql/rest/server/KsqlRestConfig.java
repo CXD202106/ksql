@@ -24,6 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import io.confluent.ksql.configdef.ConfigValidators;
 import io.confluent.ksql.rest.DefaultErrorMessages;
 import io.confluent.ksql.rest.ErrorMessages;
+import io.confluent.ksql.rest.server.execution.ConnectServerErrors;
+import io.confluent.ksql.rest.server.execution.DefaultConnectServerErrors;
 import io.confluent.ksql.util.KsqlConfig;
 import io.confluent.ksql.util.KsqlException;
 import io.confluent.ksql.util.KsqlServerException;
@@ -381,6 +383,12 @@ public class KsqlRestConfig extends AbstractConfig {
           + " otherwise be verbose. Note that this works on the entire URI, respecting the "
           + KSQL_ENDPOINT_LOGGING_LOG_QUERIES_CONFIG + " configuration";
 
+  public static final String KSQL_CONNECT_SERVER_ERROR_HANDLER =
+      KSQL_CONFIG_PREFIX + "ksql.connect.error.handler";
+  private static final String KSQL_CONNECT_SERVER_ERROR_HANDLER_DOC =
+      "A class implementing " + ConnectServerErrors.class.getSimpleName() + " interface."
+          + "This allows the KSQL server to customize connect error handling.";
+
   private static final ConfigDef CONFIG_DEF;
 
   static {
@@ -602,6 +610,12 @@ public class KsqlRestConfig extends AbstractConfig {
             DefaultErrorMessages.class,
             Importance.LOW,
             KSQL_SERVER_ERRORS_DOC
+        ).define(
+            KSQL_CONNECT_SERVER_ERROR_HANDLER,
+            Type.CLASS,
+            DefaultConnectServerErrors.class,
+            Importance.LOW,
+            KSQL_CONNECT_SERVER_ERROR_HANDLER_DOC
         ).define(
             KSQL_HEARTBEAT_ENABLE_CONFIG,
             Type.BOOLEAN,

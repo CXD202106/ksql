@@ -30,6 +30,7 @@ import io.confluent.ksql.rest.entity.CommandId;
 import io.confluent.ksql.rest.entity.CommandStatus;
 import io.confluent.ksql.rest.entity.CommandStatusEntity;
 import io.confluent.ksql.rest.entity.WarningEntity;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.rest.server.execution.StatementExecutorResponse;
 import io.confluent.ksql.security.KsqlAuthorizationValidator;
 import io.confluent.ksql.security.KsqlSecurityContext;
@@ -150,7 +151,8 @@ public class DistributingExecutor {
   public StatementExecutorResponse execute(
       final ConfiguredStatement<? extends Statement> statement,
       final KsqlExecutionContext executionContext,
-      final KsqlSecurityContext securityContext
+      final KsqlSecurityContext securityContext,
+      final KsqlRestConfig restConfig
   ) {
     final String commandRunnerWarningString = commandRunnerWarning.get();
     if (!commandRunnerWarningString.equals("")) {

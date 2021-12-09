@@ -47,6 +47,7 @@ import io.confluent.ksql.parser.tree.Statement;
 import io.confluent.ksql.rest.SessionProperties;
 import io.confluent.ksql.rest.entity.KsqlEntity;
 import io.confluent.ksql.rest.entity.KsqlEntityList;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.rest.server.computation.DistributingExecutor;
 import io.confluent.ksql.security.KsqlSecurityContext;
 import io.confluent.ksql.services.ServiceContext;
@@ -70,6 +71,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RequestHandlerTest {
 
+  private static final KsqlRestConfig REST_CONFIG = new KsqlRestConfig(ImmutableMap.of());
   private static final KsqlParser KSQL_PARSER = new DefaultKsqlParser();
   private static final String SOME_STREAM_SQL = "CREATE STREAM x WITH (value_format='json', kafka_topic='x');";
   
@@ -92,7 +94,7 @@ public class RequestHandlerTest {
     when(ksqlEngine.prepare(any(), any()))
         .thenAnswer(invocation ->
             KSQL_PARSER.prepare(invocation.getArgument(0), metaStore));
-    when(distributor.execute(any(), any(), any())).thenReturn(response);
+    when(distributor.execute(any(), any(), any(), any())).thenReturn(response);
     when(response.getEntity()).thenReturn(Optional.of(entity));
     when(sessionProperties.getMutableScopedProperties()).thenReturn(ImmutableMap.of());
     when(ksqlEngine.getKsqlConfig()).thenReturn(ksqlConfig);
@@ -112,7 +114,12 @@ public class RequestHandlerTest {
     // When
     final List<ParsedStatement> statements =
         KSQL_PARSER.parse(SOME_STREAM_SQL);
-    final KsqlEntityList entities = handler.execute(securityContext, statements, sessionProperties);
+    final KsqlEntityList entities = handler.execute(
+        securityContext,
+        statements,
+        sessionProperties,
+        REST_CONFIG
+        );
 
     // Then
     assertThat(entities, contains(entity));
@@ -123,7 +130,8 @@ public class RequestHandlerTest {
             ksqlConfig))),
             eq(sessionProperties),
             eq(ksqlEngine),
-            eq(serviceContext)
+            eq(serviceContext),
+            eq(REST_CONFIG)
         );
   }
 
@@ -141,7 +149,7 @@ public class RequestHandlerTest {
             + "WITH (value_format='json', kafka_topic='x');");
     final Exception e = assertThrows(
         KsqlException.class,
-        () -> handler.execute(securityContext, statements, sessionProperties));
+        () -> handler.execute(securityContext, statements, sessionProperties, REST_CONFIG));
 
     // Then
     assertThat(e.getMessage(), containsString(
@@ -161,7 +169,7 @@ public class RequestHandlerTest {
 
     // When
     final List<ParsedStatement> statements = KSQL_PARSER.parse(SOME_STREAM_SQL);
-    handler.execute(securityContext, statements, sessionProperties);
+    handler.execute(securityContext, statements, sessionProperties, REST_CONFIG);
 
     // Then
     verify(ksqlEngine).prepare(statements.get(0), sessionVariables);
@@ -179,7 +187,7 @@ public class RequestHandlerTest {
 
     // When
     final List<ParsedStatement> statements = KSQL_PARSER.parse(SOME_STREAM_SQL);
-    handler.execute(securityContext, statements, sessionProperties);
+    handler.execute(securityContext, statements, sessionProperties, REST_CONFIG);
 
     // Then
     verify(ksqlEngine).prepare(statements.get(0), Collections.emptyMap());
@@ -193,7 +201,10 @@ public class RequestHandlerTest {
 
     // When
     final List<ParsedStatement> statements = KSQL_PARSER.parse(SOME_STREAM_SQL);
-    final KsqlEntityList entities = handler.execute(securityContext, statements, sessionProperties);
+    final KsqlEntityList entities = handler.execute(securityContext,
+        statements,
+        sessionProperties,
+        REST_CONFIG);
 
     // Then
     assertThat(entities, contains(entity));
@@ -203,7 +214,8 @@ public class RequestHandlerTest {
             ImmutableMap.of(),
             ksqlConfig))),
             eq(ksqlEngine),
-            eq(securityContext)
+            eq(securityContext),
+            eq(REST_CONFIG)
         );
   }
 
@@ -218,7 +230,8 @@ public class RequestHandlerTest {
     final KsqlEntityList entities = handler.execute(
         securityContext,
         statements,
-        sessionProperties
+        sessionProperties,
+        REST_CONFIG
     );
 
     // Then
@@ -230,7 +243,8 @@ public class RequestHandlerTest {
                     ImmutableMap.of("x", "y"),
                     ksqlConfig))),
             eq(ksqlEngine),
-            eq(securityContext)
+            eq(securityContext),
+            eq(REST_CONFIG)
         );
   }
 
@@ -255,7 +269,7 @@ public class RequestHandlerTest {
         );
 
     // When
-    handler.execute(securityContext, statements, sessionProperties);
+    handler.execute(securityContext, statements, sessionProperties, REST_CONFIG);
 
     // Then
     verify(sync).waitFor(argThat(hasItems(entity1, entity2)), any());
@@ -285,7 +299,8 @@ public class RequestHandlerTest {
         argThat(is(configured(preparedStatement(instanceOf(statementClass))))),
         any(),
         eq(ksqlEngine),
-        eq(serviceContext)
+        eq(serviceContext),
+        eq(REST_CONFIG)
     ))
         .thenAnswer(inv -> StatementExecutorResponse.handled(Optional.ofNullable(returnedEntities[scn.getAndIncrement()])));
     return customExecutor;

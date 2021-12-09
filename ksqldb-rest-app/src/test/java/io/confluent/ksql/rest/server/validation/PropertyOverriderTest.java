@@ -65,7 +65,8 @@ public class PropertyOverriderTest {
             SessionConfig.of(engine.getKsqlConfig(), ImmutableMap.of())),
             mock(SessionProperties.class),
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         )
     );
 
@@ -89,7 +90,8 @@ public class PropertyOverriderTest {
             SessionConfig.of(engine.getKsqlConfig(), ImmutableMap.of())),
         sessionProperties,
         engine.getEngine(),
-        engine.getServiceContext()
+        engine.getServiceContext(),
+        null
     );
 
     // Then:
@@ -114,7 +116,8 @@ public class PropertyOverriderTest {
             ),
             sessionProperties,
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         )
     );
 
@@ -140,7 +143,8 @@ public class PropertyOverriderTest {
                 SessionConfig.of(engine.getKsqlConfig(), new HashMap<>())),
             sessionProperties,
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         )
     );
 
@@ -169,7 +173,8 @@ public class PropertyOverriderTest {
             SessionConfig.of(engine.getKsqlConfig(), ImmutableMap.of())),
         sessionProperties,
         engine.getEngine(),
-        engine.getServiceContext()
+        engine.getServiceContext(),
+        null
     );
 
     // Then:

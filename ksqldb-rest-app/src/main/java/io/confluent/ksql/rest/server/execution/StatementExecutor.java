@@ -18,6 +18,7 @@ package io.confluent.ksql.rest.server.execution;
 import io.confluent.ksql.KsqlExecutionContext;
 import io.confluent.ksql.parser.tree.Statement;
 import io.confluent.ksql.rest.SessionProperties;
+import io.confluent.ksql.rest.server.KsqlRestConfig;
 import io.confluent.ksql.services.ServiceContext;
 import io.confluent.ksql.statement.ConfiguredStatement;
 import java.util.Optional;
@@ -35,12 +36,14 @@ public interface StatementExecutor<T extends Statement> {
    * @param sessionProperties the session properties
    * @param executionContext the context in which to execute it
    * @param serviceContext the services to use to execute it
+   * @param restConfig the rest config allows to plug-in custom behavior, e.g. error handling
    * @return the execution result, if present, else {@link Optional#empty()}
    */
   StatementExecutorResponse execute(
       ConfiguredStatement<T> statement,
       SessionProperties sessionProperties,
       KsqlExecutionContext executionContext,
-      ServiceContext serviceContext
+      ServiceContext serviceContext,
+      KsqlRestConfig restConfig
   );
 }

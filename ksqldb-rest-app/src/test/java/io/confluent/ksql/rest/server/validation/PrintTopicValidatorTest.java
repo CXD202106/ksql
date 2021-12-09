@@ -72,7 +72,8 @@ public class PrintTopicValidatorTest {
             query,
             mock(SessionProperties.class),
             ksqlEngine,
-            serviceContext
+            serviceContext,
+            null
         )
     );
 

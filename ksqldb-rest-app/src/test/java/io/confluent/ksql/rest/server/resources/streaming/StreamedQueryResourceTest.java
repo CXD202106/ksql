@@ -259,7 +259,8 @@ public class StreamedQueryResourceTest {
             query,
             mock(SessionProperties.class),
             mockKsqlEngine,
-            serviceContext
+            serviceContext,
+            null
         )
     );
 

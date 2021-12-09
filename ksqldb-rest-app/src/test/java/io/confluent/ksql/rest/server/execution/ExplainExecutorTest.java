@@ -85,7 +85,8 @@ public class ExplainExecutorTest {
         explain,
         sessionProperties,
         engine,
-        this.engine.getServiceContext()
+        this.engine.getServiceContext(),
+        null
     ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -107,7 +108,8 @@ public class ExplainExecutorTest {
         explain,
         sessionProperties,
         engine.getEngine(),
-        engine.getServiceContext()
+        engine.getServiceContext(),
+        null
     ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -129,7 +131,8 @@ public class ExplainExecutorTest {
         explain,
         sessionProperties,
         engine.getEngine(),
-        engine.getServiceContext()
+        engine.getServiceContext(),
+        null
     ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -150,7 +153,8 @@ public class ExplainExecutorTest {
         explain,
         sessionProperties,
         engine.getEngine(),
-        engine.getServiceContext()
+        engine.getServiceContext(),
+        null
     ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -167,7 +171,8 @@ public class ExplainExecutorTest {
             engine.configure("Explain SHOW TOPICS;"),
             sessionProperties,
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         )
     );
 

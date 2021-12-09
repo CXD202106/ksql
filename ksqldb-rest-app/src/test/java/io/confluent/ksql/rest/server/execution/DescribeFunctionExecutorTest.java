@@ -48,7 +48,8 @@ public class DescribeFunctionExecutorTest {
                 "DESCRIBE FUNCTION TEST_UDF_1;"),
             mock(SessionProperties.class),
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -74,7 +75,8 @@ public class DescribeFunctionExecutorTest {
             engine.configure("DESCRIBE FUNCTION MAX;"),
             mock(SessionProperties.class),
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -100,7 +102,8 @@ public class DescribeFunctionExecutorTest {
             engine.configure("DESCRIBE FUNCTION TEST_UDTF1;"),
             mock(SessionProperties.class),
             engine.getEngine(),
-            engine.getServiceContext()
+            engine.getServiceContext(),
+            null
         ).getEntity().orElseThrow(IllegalStateException::new);
 
     // Then:
@@ -119,13 +122,13 @@ public class DescribeFunctionExecutorTest {
 
     assertThat(functionList.getFunctions(), hasSize(2));
 
-    FunctionInfo expected1 = new FunctionInfo(
+    final FunctionInfo expected1 = new FunctionInfo(
         Arrays.asList(new ArgumentInfo("foo", "INT", "", false)),
         "INT", "test_udtf1 int");
 
     assertTrue(functionList.getFunctions().contains(expected1));
 
-    FunctionInfo expected2 = new FunctionInfo(
+    final FunctionInfo expected2 = new FunctionInfo(
         Arrays.asList(new ArgumentInfo("foo", "DOUBLE", "", false)),
         "DOUBLE", "test_udtf1 double");
 
