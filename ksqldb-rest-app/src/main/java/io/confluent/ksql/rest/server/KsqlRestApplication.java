@@ -108,6 +108,7 @@ import io.confluent.ksql.services.SimpleKsqlClient;
 import io.confluent.ksql.statement.ConfiguredStatement;
 import io.confluent.ksql.util.AppInfo;
 import io.confluent.ksql.util.KsqlConfig;
+import io.confluent.ksql.util.KsqlConstants;
 import io.confluent.ksql.util.KsqlException;
 import io.confluent.ksql.util.KsqlServerException;
 import io.confluent.ksql.util.ReservedInternalTopics;
@@ -690,7 +691,11 @@ public final class KsqlRestApplication implements Executable {
           .toString();
 
     final ServiceInfo serviceInfo = ServiceInfo.create(ksqlConfig, metricsPrefix);
-    final Map<String, String> metricsTags = serviceInfo.customMetricsTags();
+    final Map<String, String> metricsTags = ImmutableMap
+        .<String, String>builder()
+        .putAll(serviceInfo.customMetricsTags())
+        .put(KsqlConstants.KSQL_SERVICE_ID_METRICS_TAG, serviceInfo.serviceId())
+        .build();
 
     StorageUtilizationMetricsReporter.configureShared(
       new File(stateDir), 

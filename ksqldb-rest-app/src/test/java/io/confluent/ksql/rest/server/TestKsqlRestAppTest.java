@@ -16,6 +16,7 @@
 package io.confluent.ksql.rest.server;
 
 import io.confluent.ksql.integration.IntegrationTestHarness;
+import io.confluent.ksql.util.KsqlConfig;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -29,10 +30,12 @@ public final class TestKsqlRestAppTest {
     // Given:
     final TestKsqlRestApp first = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "first")
         .build();
 
     final TestKsqlRestApp second = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "second")
         .build();
 
     first.start();
