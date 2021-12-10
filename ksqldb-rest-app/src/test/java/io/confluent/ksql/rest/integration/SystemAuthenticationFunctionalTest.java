@@ -164,6 +164,7 @@ public class SystemAuthenticationFunctionalTest {
     private static final TestKsqlRestApp REST_APP_0 = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
         .withEnabledKsqlClient(LOCALHOST_FACTORY)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "node1")
         .withProperty(KsqlRestConfig.LISTENERS_CONFIG, "http://0.0.0.0:0")
         .withProperty(KsqlRestConfig.ADVERTISED_LISTENER_CONFIG,
             "https://node-1.example.com:" + INT_PORT_0)
@@ -179,6 +180,7 @@ public class SystemAuthenticationFunctionalTest {
     private static final TestKsqlRestApp REST_APP_1 = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
         .withEnabledKsqlClient(LOCALHOST_FACTORY)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "node2")
         .withProperty(KsqlRestConfig.LISTENERS_CONFIG, "http://0.0.0.0:0")
         .withProperty(KsqlRestConfig.ADVERTISED_LISTENER_CONFIG,
             "https://node-2.example.com:" + INT_PORT_1)
@@ -257,6 +259,7 @@ public class SystemAuthenticationFunctionalTest {
     private static final TestKsqlRestApp REST_APP_0 = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
         .withEnabledKsqlClient(LOCALHOST_FACTORY)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "node1")
         .withProperty(KsqlRestConfig.LISTENERS_CONFIG, "http://0.0.0.0:0")
         .withProperty(KsqlRestConfig.ADVERTISED_LISTENER_CONFIG,
             "https://node-1.example.com:" + INT_PORT_0)
@@ -271,6 +274,7 @@ public class SystemAuthenticationFunctionalTest {
     private static final TestKsqlRestApp REST_APP_1 = TestKsqlRestApp
         .builder(TEST_HARNESS::kafkaBootstrapServers)
         .withEnabledKsqlClient(LOCALHOST_FACTORY)
+        .withProperty(KsqlConfig.KSQL_SERVICE_ID_CONFIG, "node2")
         .withProperty(KsqlRestConfig.LISTENERS_CONFIG, "http://0.0.0.0:0")
         .withProperty(KsqlRestConfig.ADVERTISED_LISTENER_CONFIG,
             "https://node-2.example.com:" + INT_PORT_1)
