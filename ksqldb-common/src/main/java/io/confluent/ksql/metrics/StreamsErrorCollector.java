@@ -17,6 +17,7 @@ package io.confluent.ksql.metrics;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.confluent.common.utils.Time;
 import io.confluent.ksql.metrics.TopicSensors.SensorMetric;
 import io.confluent.ksql.metrics.TopicSensors.Stat;
@@ -44,6 +45,10 @@ public final class StreamsErrorCollector implements MetricCollector {
   private final String id;
   private final Time time;
 
+  @SuppressFBWarnings(
+      value = "EI_EXPOSE_REP2",
+      justification = "metrics"
+  )
   public StreamsErrorCollector(final String applicationId, final MetricCollectors collectors) {
     this.metricCollectors = collectors;
     this.metrics = collectors.getMetrics();

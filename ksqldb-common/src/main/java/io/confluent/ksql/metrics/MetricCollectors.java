@@ -45,7 +45,6 @@ import org.apache.kafka.common.utils.SystemTime;
  * Topic based collectors for producer/consumer related statistics that can be mapped on to
  * streams/tables/queries for ksql entities (Stream, Table, Query)
  */
-
 @SuppressFBWarnings(
     value = "EI_EXPOSE_REP2",
     justification = "should be mutable"
