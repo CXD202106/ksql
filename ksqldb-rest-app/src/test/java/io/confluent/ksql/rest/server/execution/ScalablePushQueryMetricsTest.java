@@ -21,6 +21,7 @@ import static io.confluent.ksql.util.KsqlConstants.KSQL_SERVICE_ID_METRICS_TAG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertTrue;
@@ -93,7 +94,7 @@ public class ScalablePushQueryMetricsTest {
 
     // Then:
     assertThat(value, equalTo(1.0));
-    assertThat(rate, closeTo(0.03, 0.001));
+    assertThat(rate, greaterThan(0.0));
   }
 
   @Test
@@ -107,7 +108,7 @@ public class ScalablePushQueryMetricsTest {
 
     // Then:
     assertThat(value, equalTo(1.0));
-    assertThat(rate, closeTo(0.03, 0.001));
+    assertThat(rate, greaterThan(0.0));
   }
 
   @Test
@@ -124,7 +125,7 @@ public class ScalablePushQueryMetricsTest {
 
     // Then:
     assertThat(value, equalTo(1.0));
-    assertThat(rate, closeTo(0.03, 0.001));
+    assertThat(rate, greaterThan(0.0));
     assertThat(detailedValue, equalTo(1.0));
   }
 
