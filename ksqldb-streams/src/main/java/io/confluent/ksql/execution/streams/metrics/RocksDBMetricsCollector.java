@@ -99,7 +99,9 @@ public class RocksDBMetricsCollector implements MetricsReporter {
   @Override
   public void configure(final Map<String, ?> map) {
     final AbstractConfig config = new AbstractConfig(CONFIG_DEF, map);
-    this.metrics = Objects.requireNonNull((Metrics) map.get(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG));
+    this.metrics = Objects.requireNonNull(
+        (Metrics) map.get(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG)
+    );
     configureShared(config, metrics);
   }
 
