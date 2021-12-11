@@ -658,8 +658,8 @@ final class QueryBuilder {
         StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG,
         StorageUtilizationMetricsReporter.class.getName()
     );
-    newStreamsProperties.put(RocksDBMetricsCollector.METRICS_CONFIG, metricCollectors.getMetrics());
-    newStreamsProperties.put(ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors);
+    newStreamsProperties.put(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG, metricCollectors.getMetrics());
+    newStreamsProperties.put(KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors);
     newStreamsProperties.put(
         LogMetricAndContinueExceptionHandler.ERROR_COLLECTOR_CONFIG,
         new StreamsErrorCollector(applicationId, metricCollectors)

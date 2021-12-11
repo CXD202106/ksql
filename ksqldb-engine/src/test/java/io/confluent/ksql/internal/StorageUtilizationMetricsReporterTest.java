@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.confluent.ksql.execution.streams.metrics.RocksDBMetricsCollector;
+import io.confluent.ksql.util.KsqlConfig;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -56,7 +56,7 @@ public class StorageUtilizationMetricsReporterTest {
     listener = new StorageUtilizationMetricsReporter();
     listener.configure(
         ImmutableMap.of(
-            RocksDBMetricsCollector.METRICS_CONFIG, metrics
+            KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG, metrics
         )
     );
     when(metrics.metricName(any(), any(), (Map<String, String>) any())).thenAnswer(

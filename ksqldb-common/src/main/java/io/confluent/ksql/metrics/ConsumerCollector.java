@@ -18,6 +18,7 @@ package io.confluent.ksql.metrics;
 import com.google.common.collect.ImmutableMap;
 import io.confluent.common.utils.Time;
 import io.confluent.ksql.metrics.TopicSensors.SensorMetric;
+import io.confluent.ksql.util.KsqlConfig;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +44,6 @@ import org.apache.kafka.common.metrics.stats.Rate;
 
 public class ConsumerCollector implements MetricCollector, ConsumerInterceptor<Object, Object> {
 
-  public static final String METRIC_COLLECTORS_CONFIG = "ksql.internal.metric.collectors";
   public static final String CONSUMER_MESSAGES_PER_SEC = "consumer-messages-per-sec";
   public static final String CONSUMER_TOTAL_MESSAGES = "consumer-total-messages";
   public static final String CONSUMER_TOTAL_BYTES = "consumer-total-bytes";
@@ -70,7 +70,7 @@ public class ConsumerCollector implements MetricCollector, ConsumerInterceptor<O
       id = (String) map.get(ConsumerConfig.CLIENT_ID_CONFIG);
     }
     final MetricCollectors collectors = (MetricCollectors) Objects.requireNonNull(
-        map.get(METRIC_COLLECTORS_CONFIG));
+        map.get(KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG));
     configure(id, collectors);
   }
 

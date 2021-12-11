@@ -18,7 +18,7 @@ package io.confluent.ksql.execution.streams.metrics;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.confluent.ksql.metrics.MetricCollectors;
+import io.confluent.ksql.util.KsqlConfig;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Collection;
@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 public class RocksDBMetricsCollector implements MetricsReporter {
   private static final Logger LOGGER = LoggerFactory.getLogger(RocksDBMetricsCollector.class);
-  public static final String METRICS_CONFIG = "ksql.internal.metrics";
 
   static final String KSQL_ROCKSDB_METRICS_GROUP = "ksql-rocksdb-aggregates";
   static final String NUMBER_OF_RUNNING_COMPACTIONS = "num-running-compactions";
@@ -100,7 +99,7 @@ public class RocksDBMetricsCollector implements MetricsReporter {
   @Override
   public void configure(final Map<String, ?> map) {
     final AbstractConfig config = new AbstractConfig(CONFIG_DEF, map);
-    this.metrics = Objects.requireNonNull((Metrics) map.get(METRICS_CONFIG));
+    this.metrics = Objects.requireNonNull((Metrics) map.get(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG));
     configureShared(config, metrics);
   }
 

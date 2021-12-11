@@ -20,9 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
@@ -31,6 +29,7 @@ import io.confluent.ksql.engine.KsqlEngine;
 import io.confluent.ksql.metrics.ConsumerCollector;
 import io.confluent.ksql.metrics.MetricCollectors;
 import io.confluent.ksql.metrics.ProducerCollector;
+import io.confluent.ksql.util.KsqlConfig;
 import io.confluent.ksql.util.KsqlConstants;
 import io.confluent.ksql.util.PersistentQueryMetadata;
 import io.confluent.ksql.util.QueryMetadata;
@@ -322,7 +321,7 @@ public class KsqlEngineMetricsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, groupId,
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
     final Map<TopicPartition, List<ConsumerRecord<Object, Object>>> records = new HashMap<>();
@@ -342,7 +341,7 @@ public class KsqlEngineMetricsTest {
     collector1.configure(
         ImmutableMap.of(
             ProducerConfig.CLIENT_ID_CONFIG, "client1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
     for (int i = 0; i < numMessages; i++) {

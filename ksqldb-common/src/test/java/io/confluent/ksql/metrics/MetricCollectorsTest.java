@@ -89,7 +89,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "stream-thread-1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -97,7 +97,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "stream-thread-2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -147,7 +147,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ProducerConfig.CLIENT_ID_CONFIG, "client1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -155,7 +155,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ProducerConfig.CLIENT_ID_CONFIG, "client2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -182,7 +182,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -190,7 +190,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
     final Map<TopicPartition, List<ConsumerRecord<Object, Object>>> records = new HashMap<>();
@@ -230,7 +230,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -238,7 +238,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
     final Map<TopicPartition, List<ConsumerRecord<Object, Object>>> records = new HashMap<>();
@@ -277,7 +277,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -285,7 +285,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "client2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
     final Map<TopicPartition, List<ConsumerRecord<Object, Object>>> records = new HashMap<>();
@@ -326,7 +326,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -334,7 +334,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -342,7 +342,7 @@ public class MetricCollectorsTest {
     collector3.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -393,7 +393,7 @@ public class MetricCollectorsTest {
     collector1.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -401,7 +401,7 @@ public class MetricCollectorsTest {
     collector2.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group1",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -409,7 +409,7 @@ public class MetricCollectorsTest {
     collector3.configure(
         ImmutableMap.of(
             ConsumerConfig.GROUP_ID_CONFIG, "group2",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 
@@ -419,7 +419,7 @@ public class MetricCollectorsTest {
     collector4.configure(
         ImmutableMap.of(
             ConsumerConfig.CLIENT_ID_CONFIG, "restore-consumer-client",
-            ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors
+            KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors
         )
     );
 

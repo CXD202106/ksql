@@ -19,8 +19,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.confluent.ksql.execution.streams.metrics.RocksDBMetricsCollector;
+import io.confluent.ksql.util.KsqlConfig;
 import io.confluent.ksql.util.KsqlException;
 import java.io.File;
 import java.math.BigInteger;
@@ -28,10 +27,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,7 +61,7 @@ public class StorageUtilizationMetricsReporter implements MetricsReporter {
 
   @Override
   public void configure(final Map<String, ?> map) {
-    this.metricRegistry = (Metrics) requireNonNull(map.get(RocksDBMetricsCollector.METRICS_CONFIG));
+    this.metricRegistry = (Metrics) requireNonNull(map.get(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG));
     this.metricsSeen = new HashMap<>();
   }
 

@@ -18,6 +18,7 @@ package io.confluent.ksql.metrics;
 import com.google.common.collect.ImmutableMap;
 import io.confluent.common.utils.Time;
 import io.confluent.ksql.metrics.TopicSensors.SensorMetric;
+import io.confluent.ksql.util.KsqlConfig;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class ProducerCollector implements MetricCollector, ProducerInterceptor<O
   public void configure(final Map<String, ?> map) {
     final String id = (String) map.get(ProducerConfig.CLIENT_ID_CONFIG);
     final MetricCollectors collectors = (MetricCollectors) Objects.requireNonNull(
-        map.get(ConsumerCollector.METRIC_COLLECTORS_CONFIG)
+        map.get(KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG)
     );
     configure(id, collectors);
   }
