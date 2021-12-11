@@ -372,6 +372,7 @@ final class QueryBuilder {
 
   }
 
+  @SuppressWarnings("ParameterNumber")
   PersistentQueryMetadata buildPersistentQueryInSharedRuntime(
       final KsqlConfig ksqlConfig,
       final KsqlConstants.PersistentQueryType persistentQueryType,
