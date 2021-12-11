@@ -89,13 +89,6 @@ public class RocksDBMetricsCollector implements MetricsReporter {
   private static Map<String, Collection<AggregatedMetric<?>>> registeredMetrics = null;
   private Metrics metrics;
 
-  public RocksDBMetricsCollector() {}
-
-  @VisibleForTesting
-  RocksDBMetricsCollector(final Metrics metrics) {
-    this.metrics = Objects.requireNonNull(metrics);
-  }
-
   @Override
   public void configure(final Map<String, ?> map) {
     final AbstractConfig config = new AbstractConfig(CONFIG_DEF, map);
