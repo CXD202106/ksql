@@ -16,7 +16,6 @@
 package io.confluent.ksql.rest.server.computation;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.confluent.ksql.metrics.MetricCollectors;
 import io.confluent.ksql.util.KsqlConstants;
 import io.confluent.ksql.util.ReservedInternalTopics;
 import java.io.Closeable;

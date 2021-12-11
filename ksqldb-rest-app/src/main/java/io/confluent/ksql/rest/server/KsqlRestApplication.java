@@ -613,7 +613,10 @@ public final class KsqlRestApplication implements Executable {
     });
   }
 
-  public static KsqlRestApplication buildApplication(final KsqlRestConfig restConfig, final MetricCollectors metricCollectors) {
+  public static KsqlRestApplication buildApplication(
+      final KsqlRestConfig restConfig,
+      final MetricCollectors metricCollectors) {
+
     final Map<String, Object> updatedRestProps = restConfig.getOriginals();
     final KsqlConfig ksqlConfig = new KsqlConfig(restConfig.getKsqlConfigProperties());
     final Vertx vertx = Vertx.vertx(
@@ -661,7 +664,11 @@ public final class KsqlRestApplication implements Executable {
     );
   }
 
-  @SuppressWarnings({"checkstyle:JavaNCSS", "checkstyle:MethodLength"})
+  @SuppressWarnings({
+      "checkstyle:JavaNCSS",
+      "checkstyle:MethodLength",
+      "checkstyle:ParameterNumber"
+  })
   static KsqlRestApplication buildApplication(
       final String metricsPrefix,
       final KsqlRestConfig restConfig,

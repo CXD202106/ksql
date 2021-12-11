@@ -149,7 +149,12 @@ public class KsqlServerMain {
       final MetricCollectors metricCollectors
   ) throws IOException {
     if (queriesFile.isPresent()) {
-      return StandaloneExecutorFactory.create(properties, queriesFile.get(), installDir, metricCollectors);
+      return StandaloneExecutorFactory.create(
+          properties,
+          queriesFile.get(),
+          installDir,
+          metricCollectors
+      );
     }
 
     final KsqlRestConfig restConfig = new KsqlRestConfig(properties);
