@@ -60,7 +60,7 @@ public class StorageUtilizationMetricsReporter implements MetricsReporter {
   }
 
   @Override
-  public void configure(final Map<String, ?> map) {
+  public synchronized void configure(final Map<String, ?> map) {
     this.metricRegistry = (Metrics) requireNonNull(
         map.get(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG)
     );

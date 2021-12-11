@@ -335,6 +335,7 @@ public class KsqlEngine implements KsqlExecutionContext, Closeable {
     return this.primaryContext.getKsqlConfig();
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "metrics")
   @Override
   public MetricCollectors metricCollectors() {
     return metricCollectors;

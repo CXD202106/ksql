@@ -79,6 +79,7 @@ public class PullQueryExecutorMetrics implements Closeable {
   private final String ksqlServicePrefix;
   private final Time time;
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "metrics")
   public PullQueryExecutorMetrics(
       final String ksqlServiceId,
       final Map<String, String> customMetricsTags,
