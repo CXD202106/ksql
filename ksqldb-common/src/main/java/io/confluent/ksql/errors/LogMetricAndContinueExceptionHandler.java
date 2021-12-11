@@ -16,6 +16,7 @@
 package io.confluent.ksql.errors;
 
 import io.confluent.ksql.metrics.StreamsErrorCollector;
+import io.confluent.ksql.util.KsqlConfig;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LogMetricAndContinueExceptionHandler implements DeserializationExceptionHandler {
-  public static final String ERROR_COLLECTOR_CONFIG = "ksql.internal.streams.error.collector";
+
   private static final Logger log
       = LoggerFactory.getLogger(LogMetricAndContinueExceptionHandler.class);
   private StreamsErrorCollector streamsErrorCollector;
@@ -50,6 +51,10 @@ public class LogMetricAndContinueExceptionHandler implements DeserializationExce
   @Override
   public void configure(final Map<String, ?> configs) {
     this.streamsErrorCollector =
-        (StreamsErrorCollector) Objects.requireNonNull(configs.get(ERROR_COLLECTOR_CONFIG));
+        (StreamsErrorCollector) Objects.requireNonNull(
+            configs.get(
+                KsqlConfig.KSQL_INTERNAL_STREAMS_ERROR_COLLECTOR_CONFIG
+            )
+        );
   }
 }

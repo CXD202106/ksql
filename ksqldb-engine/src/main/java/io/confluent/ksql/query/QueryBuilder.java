@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import io.confluent.ksql.GenericRow;
 import io.confluent.ksql.config.SessionConfig;
-import io.confluent.ksql.errors.LogMetricAndContinueExceptionHandler;
 import io.confluent.ksql.errors.ProductionExceptionHandlerUtil;
 import io.confluent.ksql.execution.context.QueryContext;
 import io.confluent.ksql.execution.context.QueryLoggerUtil;
@@ -658,12 +657,18 @@ final class QueryBuilder {
         StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG,
         StorageUtilizationMetricsReporter.class.getName()
     );
-    newStreamsProperties.put(KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG, metricCollectors.getMetrics());
+
+    // Passing shared state into managed components
     newStreamsProperties.put(KsqlConfig.KSQL_INTERNAL_METRIC_COLLECTORS_CONFIG, metricCollectors);
     newStreamsProperties.put(
-        LogMetricAndContinueExceptionHandler.ERROR_COLLECTOR_CONFIG,
+        KsqlConfig.KSQL_INTERNAL_METRICS_CONFIG,
+        metricCollectors.getMetrics()
+    );
+    newStreamsProperties.put(
+        KsqlConfig.KSQL_INTERNAL_STREAMS_ERROR_COLLECTOR_CONFIG,
         new StreamsErrorCollector(applicationId, metricCollectors)
     );
+
     return newStreamsProperties;
   }
 

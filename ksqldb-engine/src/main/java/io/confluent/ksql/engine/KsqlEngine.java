@@ -28,7 +28,6 @@ import io.confluent.ksql.analyzer.Analysis;
 import io.confluent.ksql.analyzer.ImmutableAnalysis;
 import io.confluent.ksql.analyzer.QueryAnalyzer;
 import io.confluent.ksql.analyzer.RewrittenAnalysis;
-import io.confluent.ksql.errors.LogMetricAndContinueExceptionHandler;
 import io.confluent.ksql.execution.streams.RoutingOptions;
 import io.confluent.ksql.function.FunctionRegistry;
 import io.confluent.ksql.internal.KsqlEngineMetrics;
@@ -644,7 +643,7 @@ public class KsqlEngine implements KsqlExecutionContext, Closeable {
 
       final Object o =
           query.getStreamsProperties()
-              .get(LogMetricAndContinueExceptionHandler.ERROR_COLLECTOR_CONFIG);
+              .get(KsqlConfig.KSQL_INTERNAL_STREAMS_ERROR_COLLECTOR_CONFIG);
       if (o instanceof StreamsErrorCollector) {
         ((StreamsErrorCollector) o).cleanup();
       }
