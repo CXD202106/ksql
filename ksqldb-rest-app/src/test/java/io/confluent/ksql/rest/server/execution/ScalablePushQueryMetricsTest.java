@@ -61,17 +61,15 @@ public class ScalablePushQueryMetricsTest {
 
   @Before
   public void setUp() {
-    MetricCollectors.initialize();
     when(ksqlEngine.getServiceId()).thenReturn(KSQL_SERVICE_ID);
     when(time.nanoseconds()).thenReturn(6000L);
 
-    scalablePushQueryMetrics = new ScalablePushQueryMetrics(ksqlEngine.getServiceId(), CUSTOM_TAGS, time);
+    scalablePushQueryMetrics = new ScalablePushQueryMetrics(ksqlEngine.getServiceId(), CUSTOM_TAGS, time, new Metrics());
   }
 
   @After
   public void tearDown() {
     scalablePushQueryMetrics.close();
-    MetricCollectors.cleanUp();
   }
 
   @Test

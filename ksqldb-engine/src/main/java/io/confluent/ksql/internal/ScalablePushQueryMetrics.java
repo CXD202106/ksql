@@ -78,7 +78,8 @@ public class ScalablePushQueryMetrics implements Closeable {
   public ScalablePushQueryMetrics(
       final String ksqlServiceId,
       final Map<String, String> customMetricsTags,
-      final Time time
+      final Time time,
+      final Metrics metrics
   ) {
 
     this.ksqlServicePrefix = ReservedInternalTopics.KSQL_INTERNAL_TOPIC_PREFIX;
@@ -87,7 +88,7 @@ public class ScalablePushQueryMetrics implements Closeable {
     this.customMetricsTags = ImmutableMap.copyOf(metricsTags);
 
     this.time = Objects.requireNonNull(time, "time");
-    this.metrics = MetricCollectors.getMetrics();
+    this.metrics = metrics;
     this.sensors = new ArrayList<>();
     this.localRequestsSensor = configureLocalRequestsSensor();
     this.remoteRequestsSensor = configureRemoteRequestsSensor();

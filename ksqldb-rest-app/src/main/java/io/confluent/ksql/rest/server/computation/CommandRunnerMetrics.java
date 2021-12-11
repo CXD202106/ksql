@@ -43,10 +43,11 @@ public class CommandRunnerMetrics implements Closeable {
   CommandRunnerMetrics(
       final String ksqlServiceId,
       final CommandRunner commandRunner,
-      final String metricGroupPrefix
+      final String metricGroupPrefix,
+      final Metrics metrics
   ) {
     this(
-        MetricCollectors.getMetrics(),
+        metrics,
         commandRunner,
         ksqlServiceId,
         metricGroupPrefix.isEmpty() ? DEFAULT_METRIC_GROUP_PREFIX : metricGroupPrefix

@@ -242,7 +242,8 @@ public final class KsqlRestApplication implements Executable {
       final Optional<PullQueryExecutorMetrics> pullQueryMetrics,
       final Optional<ScalablePushQueryMetrics> scalablePushQueryMetrics,
       final Optional<LocalCommands> localCommands,
-      final QueryExecutor queryExecutor
+      final QueryExecutor queryExecutor,
+      final MetricCollectors metricCollectors
   ) {
     log.debug("Creating instance of ksqlDB API server");
     this.serviceContext = requireNonNull(serviceContext, "serviceContext");
@@ -288,7 +289,7 @@ public final class KsqlRestApplication implements Executable {
         this.restConfig,
         this.ksqlConfigNoPort,
         this.commandRunner);
-    MetricCollectors.addConfigurableReporter(ksqlConfigNoPort);
+    metricCollectors.addConfigurableReporter(ksqlConfigNoPort);
     this.pullQueryMetrics = requireNonNull(pullQueryMetrics, "pullQueryMetrics");
     this.scalablePushQueryMetrics =
         requireNonNull(scalablePushQueryMetrics, "scalablePushQueryMetrics");
@@ -612,7 +613,7 @@ public final class KsqlRestApplication implements Executable {
     });
   }
 
-  public static KsqlRestApplication buildApplication(final KsqlRestConfig restConfig) {
+  public static KsqlRestApplication buildApplication(final KsqlRestConfig restConfig, final MetricCollectors metricCollectors) {
     final Map<String, Object> updatedRestProps = restConfig.getOriginals();
     final KsqlConfig ksqlConfig = new KsqlConfig(restConfig.getKsqlConfigProperties());
     final Vertx vertx = Vertx.vertx(
@@ -635,7 +636,7 @@ public final class KsqlRestApplication implements Executable {
     final String kafkaClusterId = KafkaClusterUtil.getKafkaClusterId(tempServiceContext);
     final String ksqlServerId = ksqlConfig.getString(KsqlConfig.KSQL_SERVICE_ID_CONFIG);
     updatedRestProps.putAll(
-        MetricCollectors.addConfluentMetricsContextConfigs(ksqlServerId, kafkaClusterId));
+        metricCollectors.addConfluentMetricsContextConfigs(ksqlServerId, kafkaClusterId));
     final KsqlRestConfig updatedRestConfig = new KsqlRestConfig(updatedRestProps);
 
     final ServiceContext serviceContext = new LazyServiceContext(() ->
@@ -655,7 +656,8 @@ public final class KsqlRestApplication implements Executable {
         vertx,
         sharedClient,
         RestServiceContextFactory::create,
-        RestServiceContextFactory::create
+        RestServiceContextFactory::create,
+        metricCollectors
     );
   }
 
@@ -670,7 +672,8 @@ public final class KsqlRestApplication implements Executable {
       final Vertx vertx,
       final KsqlClient sharedClient,
       final DefaultServiceContextFactory defaultServiceContextFactory,
-      final UserServiceContextFactory userServiceContextFactory) {
+      final UserServiceContextFactory userServiceContextFactory,
+      final MetricCollectors metricCollectors) {
     final String ksqlInstallDir = restConfig.getString(KsqlRestConfig.INSTALL_DIR_CONFIG);
 
     final KsqlConfig ksqlConfig = new KsqlConfig(restConfig.getKsqlConfigProperties());
@@ -697,7 +700,7 @@ public final class KsqlRestApplication implements Executable {
 
     StorageUtilizationMetricsReporter.configureShared(
       new File(stateDir), 
-        MetricCollectors.getMetrics(),
+        metricCollectors.getMetrics(),
         ksqlConfig.getStringAsMap(KsqlConfig.KSQL_CUSTOM_METRICS_TAGS)
     );
 
@@ -713,13 +716,14 @@ public final class KsqlRestApplication implements Executable {
         ServiceInfo.create(ksqlConfig, metricsPrefix),
         specificQueryIdGenerator,
         new KsqlConfig(restConfig.getKsqlConfigProperties()),
-        Collections.emptyList()
+        Collections.emptyList(),
+        metricCollectors
     );
     
     final PersistentQuerySaturationMetrics saturation = new PersistentQuerySaturationMetrics(
         ksqlEngine,
         new JmxDataPointsReporter(
-            MetricCollectors.getMetrics(), "ksqldb_utilization", Duration.ofMinutes(1)),
+            metricCollectors.getMetrics(), "ksqldb_utilization", Duration.ofMinutes(1)),
         Duration.ofMinutes(5),
         Duration.ofSeconds(30),
         ksqlConfig.getStringAsMap(KsqlConfig.KSQL_CUSTOM_METRICS_TAGS)
@@ -731,7 +735,12 @@ public final class KsqlRestApplication implements Executable {
         TimeUnit.MILLISECONDS
     );
 
-    UserFunctionLoader.newInstance(ksqlConfig, functionRegistry, ksqlInstallDir).load();
+    UserFunctionLoader.newInstance(
+        ksqlConfig,
+        functionRegistry,
+        ksqlInstallDir,
+        metricCollectors.getMetrics()
+    ).load();
 
     final String commandTopicName = ReservedInternalTopics.commandTopic(ksqlConfig);
 
@@ -802,7 +811,7 @@ public final class KsqlRestApplication implements Executable {
         ? Optional.of(new PullQueryExecutorMetrics(
         ksqlEngine.getServiceId(),
         ksqlConfig.getStringAsMap(KsqlConfig.KSQL_CUSTOM_METRICS_TAGS),
-        Time.SYSTEM))
+        Time.SYSTEM, metricCollectors.getMetrics()))
         : Optional.empty();
 
     final Optional<ScalablePushQueryMetrics> scalablePushQueryMetrics =
@@ -810,7 +819,7 @@ public final class KsqlRestApplication implements Executable {
         ? Optional.of(new ScalablePushQueryMetrics(
         ksqlEngine.getServiceId(),
         ksqlConfig.getStringAsMap(KsqlConfig.KSQL_CUSTOM_METRICS_TAGS),
-        Time.SYSTEM))
+        Time.SYSTEM, metricCollectors.getMetrics()))
         : Optional.empty();
 
     final HARouting pullQueryRouting = new HARouting(
@@ -867,7 +876,8 @@ public final class KsqlRestApplication implements Executable {
         InternalTopicSerdes.deserializer(Command.class),
         errorHandler,
         serviceContext.getTopicClient(),
-        commandTopicName
+        commandTopicName,
+        metricCollectors.getMetrics()
     );
   
     final KsqlResource ksqlResource = new KsqlResource(
@@ -920,7 +930,8 @@ public final class KsqlRestApplication implements Executable {
         pullQueryMetrics,
         scalablePushQueryMetrics,
         localCommands,
-        queryExecutor
+        queryExecutor,
+        metricCollectors
     );
   }
 

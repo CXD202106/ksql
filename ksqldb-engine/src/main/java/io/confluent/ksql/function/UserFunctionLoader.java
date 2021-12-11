@@ -141,7 +141,8 @@ public class UserFunctionLoader {
   public static UserFunctionLoader newInstance(
       final KsqlConfig config,
       final MutableFunctionRegistry metaStore,
-      final String ksqlInstallDir
+      final String ksqlInstallDir,
+      final Metrics metricsRegistry
   ) {
     final boolean loadCustomerUdfs = config.getBoolean(KsqlConfig.KSQL_ENABLE_UDFS);
     final boolean collectMetrics = config.getBoolean(KsqlConfig.KSQL_COLLECT_UDF_METRICS);
@@ -151,7 +152,7 @@ public class UserFunctionLoader {
         : new File(extDirName);
 
     final Optional<Metrics> metrics = collectMetrics
-        ? Optional.of(MetricCollectors.getMetrics())
+        ? Optional.of(metricsRegistry)
         : empty();
 
     if (config.getBoolean(KsqlConfig.KSQL_UDF_SECURITY_MANAGER_ENABLED)) {

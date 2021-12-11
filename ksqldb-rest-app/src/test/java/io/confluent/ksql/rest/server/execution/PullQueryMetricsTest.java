@@ -63,17 +63,15 @@ public class PullQueryMetricsTest {
 
   @Before
   public void setUp() {
-    MetricCollectors.initialize();
     when(ksqlEngine.getServiceId()).thenReturn(KSQL_SERVICE_ID);
     when(time.nanoseconds()).thenReturn(6000L);
 
-    pullMetrics = new PullQueryExecutorMetrics(ksqlEngine.getServiceId(), CUSTOM_TAGS, time);
+    pullMetrics = new PullQueryExecutorMetrics(ksqlEngine.getServiceId(), CUSTOM_TAGS, time, new Metrics());
   }
 
   @After
   public void tearDown() {
     pullMetrics.close();
-    MetricCollectors.cleanUp();
   }
 
   @Test

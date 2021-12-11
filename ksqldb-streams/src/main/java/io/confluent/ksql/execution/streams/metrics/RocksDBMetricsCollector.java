@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 
 public class RocksDBMetricsCollector implements MetricsReporter {
   private static final Logger LOGGER = LoggerFactory.getLogger(RocksDBMetricsCollector.class);
+  public static final String METRICS_CONFIG = "ksql.internal.metrics";
 
   static final String KSQL_ROCKSDB_METRICS_GROUP = "ksql-rocksdb-aggregates";
   static final String NUMBER_OF_RUNNING_COMPACTIONS = "num-running-compactions";
@@ -87,11 +88,9 @@ public class RocksDBMetricsCollector implements MetricsReporter {
   private static final Object lock = new Object();
 
   private static Map<String, Collection<AggregatedMetric<?>>> registeredMetrics = null;
-  private final Metrics metrics;
+  private Metrics metrics;
 
-  public RocksDBMetricsCollector() {
-    this(MetricCollectors.getMetrics());
-  }
+  public RocksDBMetricsCollector() {}
 
   @VisibleForTesting
   RocksDBMetricsCollector(final Metrics metrics) {
@@ -101,6 +100,7 @@ public class RocksDBMetricsCollector implements MetricsReporter {
   @Override
   public void configure(final Map<String, ?> map) {
     final AbstractConfig config = new AbstractConfig(CONFIG_DEF, map);
+    this.metrics = Objects.requireNonNull((Metrics) map.get(METRICS_CONFIG));
     configureShared(config, metrics);
   }
 

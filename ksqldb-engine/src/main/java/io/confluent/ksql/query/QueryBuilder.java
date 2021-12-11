@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import io.confluent.ksql.GenericRow;
 import io.confluent.ksql.config.SessionConfig;
+import io.confluent.ksql.errors.LogMetricAndContinueExceptionHandler;
 import io.confluent.ksql.errors.ProductionExceptionHandlerUtil;
 import io.confluent.ksql.execution.context.QueryContext;
 import io.confluent.ksql.execution.context.QueryLoggerUtil;
@@ -46,7 +47,9 @@ import io.confluent.ksql.logging.processing.ProcessingLogContext;
 import io.confluent.ksql.logging.processing.ProcessingLogger;
 import io.confluent.ksql.metastore.model.DataSource;
 import io.confluent.ksql.metrics.ConsumerCollector;
+import io.confluent.ksql.metrics.MetricCollectors;
 import io.confluent.ksql.metrics.ProducerCollector;
+import io.confluent.ksql.metrics.StreamsErrorCollector;
 import io.confluent.ksql.name.SourceName;
 import io.confluent.ksql.physical.scalablepush.ScalablePushRegistry;
 import io.confluent.ksql.properties.PropertiesUtil;
@@ -178,7 +181,8 @@ final class QueryBuilder {
       final boolean excludeTombstones,
       final QueryMetadata.Listener listener,
       final StreamsBuilder streamsBuilder,
-      final Optional<ImmutableMap<TopicPartition, Long>> endOffsets
+      final Optional<ImmutableMap<TopicPartition, Long>> endOffsets,
+      final MetricCollectors metricCollectors
   ) {
     final KsqlConfig ksqlConfig = config.getConfig(true);
     final String applicationId = QueryApplicationId.build(ksqlConfig, false, queryId);
@@ -188,7 +192,11 @@ final class QueryBuilder {
         streamsBuilder
     );
 
-    final Map<String, Object> streamsProperties = buildStreamsProperties(applicationId, queryId);
+    final Map<String, Object> streamsProperties = buildStreamsProperties(
+        applicationId,
+        queryId,
+        metricCollectors
+    );
     final Object buildResult = buildQueryImplementation(physicalPlan, runtimeBuildContext);
     final TransientQueryQueue queue =
         buildTransientQueryQueue(buildResult, limit, excludeTombstones, endOffsets);
@@ -265,10 +273,15 @@ final class QueryBuilder {
       final String planSummary,
       final QueryMetadata.Listener listener,
       final Supplier<List<PersistentQueryMetadata>> allPersistentQueries,
-      final StreamsBuilder streamsBuilder) {
+      final StreamsBuilder streamsBuilder,
+      final MetricCollectors metricCollectors) {
 
     final String applicationId = QueryApplicationId.build(ksqlConfig, true, queryId);
-    final Map<String, Object> streamsProperties = buildStreamsProperties(applicationId, queryId);
+    final Map<String, Object> streamsProperties = buildStreamsProperties(
+        applicationId,
+        queryId,
+        metricCollectors
+    );
 
     final LogicalSchema logicalSchema;
     final KeyFormat keyFormat;
@@ -370,11 +383,14 @@ final class QueryBuilder {
       final ExecutionStep<?> physicalPlan,
       final String planSummary,
       final QueryMetadata.Listener listener,
-      final Supplier<List<PersistentQueryMetadata>> allPersistentQueries
+      final Supplier<List<PersistentQueryMetadata>> allPersistentQueries,
+      final MetricCollectors metricCollectors
   ) {
     final SharedKafkaStreamsRuntime sharedKafkaStreamsRuntime = getKafkaStreamsInstance(
         sources.stream().map(DataSource::getName).collect(Collectors.toSet()),
-        queryId);
+        queryId,
+        metricCollectors
+    );
     final String applicationId = sharedKafkaStreamsRuntime.getApplicationId();
     final Map<String, Object> queryOverrides = sharedKafkaStreamsRuntime.getStreamProperties();
 
@@ -497,7 +513,8 @@ final class QueryBuilder {
 
   private SharedKafkaStreamsRuntime getKafkaStreamsInstance(
           final Set<SourceName> sources,
-          final QueryId queryID) {
+          final QueryId queryID,
+          final MetricCollectors metricCollectors) {
     for (final SharedKafkaStreamsRuntime sharedKafkaStreamsRuntime : streams) {
       if (sharedKafkaStreamsRuntime.getSources().stream().noneMatch(sources::contains)
           || sharedKafkaStreamsRuntime.getQueries().contains(queryID)) {
@@ -516,7 +533,8 @@ final class QueryBuilder {
           ksqlConfig.getLong(KsqlConfig.KSQL_SHUTDOWN_TIMEOUT_MS_CONFIG),
           buildStreamsProperties(
               applicationId,
-              queryID
+              queryID,
+              metricCollectors
           )
       );
     } else {
@@ -524,7 +542,8 @@ final class QueryBuilder {
           kafkaStreamsBuilder,
           buildStreamsProperties(
               buildSharedRuntimeId(ksqlConfig, true, streams.size()) + "-validation",
-              queryID
+              queryID,
+              metricCollectors
           )
       );
     }
@@ -607,7 +626,8 @@ final class QueryBuilder {
 
   private Map<String, Object> buildStreamsProperties(
       final String applicationId,
-      final QueryId queryId
+      final QueryId queryId,
+      final MetricCollectors metricCollectors
   ) {
     final Map<String, Object> newStreamsProperties
         = new HashMap<>(config.getConfig(true).getKsqlStreamConfigProps(applicationId));
@@ -637,6 +657,12 @@ final class QueryBuilder {
         newStreamsProperties,
         StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG,
         StorageUtilizationMetricsReporter.class.getName()
+    );
+    newStreamsProperties.put(RocksDBMetricsCollector.METRICS_CONFIG, metricCollectors.getMetrics());
+    newStreamsProperties.put(ConsumerCollector.METRIC_COLLECTORS_CONFIG, metricCollectors);
+    newStreamsProperties.put(
+        LogMetricAndContinueExceptionHandler.ERROR_COLLECTOR_CONFIG,
+        new StreamsErrorCollector(applicationId, metricCollectors)
     );
     return newStreamsProperties;
   }

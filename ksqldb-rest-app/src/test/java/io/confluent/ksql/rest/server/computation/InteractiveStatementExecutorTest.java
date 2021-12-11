@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.confluent.ksql.metrics.MetricCollectors;
 import org.apache.kafka.common.config.ConfigException;
 import io.confluent.ksql.KsqlConfigTestUtil;
 import io.confluent.ksql.KsqlExecutionContext.ExecuteResult;
@@ -146,12 +147,16 @@ public class InteractiveStatementExecutorTest {
     fakeKafkaTopicClient.createTopic("pageview_topic_json", 1, (short) 1, emptyMap());
     serviceContext = TestServiceContext.create(fakeKafkaTopicClient);
     final SpecificQueryIdGenerator hybridQueryIdGenerator = new SpecificQueryIdGenerator();
+    final MetricCollectors metricCollectors = new MetricCollectors();
     ksqlEngine = KsqlEngineTestUtil.createKsqlEngine(
         serviceContext,
         new MetaStoreImpl(new InternalFunctionRegistry()),
-        (engine) -> new KsqlEngineMetrics("", engine, Collections.emptyMap(), Optional.empty()),
+        (engine) -> new KsqlEngineMetrics("", engine, Collections.emptyMap(), Optional.empty(),
+            metricCollectors
+        ),
         hybridQueryIdGenerator,
-        ksqlConfig
+        ksqlConfig,
+        metricCollectors
     );
 
     statementParser = new StatementParser(ksqlEngine);

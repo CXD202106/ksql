@@ -83,7 +83,8 @@ public class PullQueryExecutorMetrics implements Closeable {
   public PullQueryExecutorMetrics(
       final String ksqlServiceId,
       final Map<String, String> customMetricsTags,
-      final Time time
+      final Time time,
+      final Metrics metrics
   ) {
     this.ksqlServiceIdLegacyPrefix = ReservedInternalTopics.KSQL_INTERNAL_TOPIC_PREFIX
         + ksqlServiceId;
@@ -95,7 +96,7 @@ public class PullQueryExecutorMetrics implements Closeable {
     this.customMetricsTags = ImmutableMap.copyOf(metricsTags);
 
     this.time = Objects.requireNonNull(time, "time");
-    this.metrics = MetricCollectors.getMetrics();
+    this.metrics = metrics;
     this.sensors = new ArrayList<>();
     this.localRequestsSensor = configureLocalRequestsSensor();
     this.remoteRequestsSensor = configureRemoteRequestsSensor();
