@@ -23,7 +23,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.confluent.common.utils.Time;
 import io.confluent.ksql.util.AppInfo;
 import io.confluent.ksql.util.KsqlConfig;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +32,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.common.metrics.JmxReporter;
 import org.apache.kafka.common.metrics.KafkaMetricsContext;
@@ -77,7 +75,8 @@ public final class MetricCollectors {
                     1000,
                     TimeUnit.MILLISECONDS
                 ),
-            new LinkedList<>(singletonList(new JmxReporter())), // must be a mutable list to add configured reporters later
+            // must be a mutable list to add configured reporters later
+            new LinkedList<>(singletonList(new JmxReporter())),
             new SystemTime(),
             new KafkaMetricsContext(KSQL_JMX_PREFIX)
         )
